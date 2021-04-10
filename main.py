@@ -1,22 +1,13 @@
 # Импортируем необходимые классы.
 from telegram.ext import Updater, MessageHandler, Filters
-from telegram.ext import CallbackContext, CommandHandler
-
-
-# Определяем функцию-обработчик сообщений.
-# У неё два параметра, сам бот и класс updater, принявший сообщение.
-def echo(update, context):
-    # У объекта класса Updater есть поле message,
-    # являющееся объектом сообщения.
-    # У message есть поле text, содержащее текст полученного сообщения,
-    # а также метод reply_text(str),
-    # отсылающий ответ пользователю, от которого получено сообщение.
-    update.message.reply_text(update.message.text)
+from telegram.ext import CallbackContext
+from telegram.ext import CommandHandler
+import config, bot_functions
 
 
 def main():
     # Создаём объект updater.
-    updater = Updater("1745746821:AAHjv-VrhPzVyBYZIDBwr4lDpY2lFXUE5is", use_context=True)
+    updater = Updater(config.TOKEN, use_context=True)
 
     # Получаем из него диспетчер сообщений.
     dp = updater.dispatcher
@@ -26,8 +17,19 @@ def main():
     # После регистрации обработчика в диспетчере
     # эта функция будет вызываться при получении сообщения
     # с типом "текст", т. е. текстовых сообщений.
-    text_handler = MessageHandler(Filters.text, echo)
+    text_handler = MessageHandler(Filters.text, bot_functions.echo)
 
+    # Зарегистрируем их в диспетчере рядом
+    # с регистрацией обработчиков текстовых сообщений.
+    # Первым параметром конструктора CommandHandler я
+    # вляется название команды.
+    dp.add_handler(CommandHandler("start", bot_functions.start))
+    dp.add_handler(CommandHandler("help", bot_functions.help))
+    dp.add_handler(CommandHandler("address", bot_functions.address))
+    dp.add_handler(CommandHandler("phone", bot_functions.phone))
+    dp.add_handler(CommandHandler("site", bot_functions.site))
+    dp.add_handler(CommandHandler("open", bot_functions.open_keyboard))
+    dp.add_handler(CommandHandler("close", bot_functions.close_keyboard))
     # Регистрируем обработчик в диспетчере.
     dp.add_handler(text_handler)
     # Запускаем цикл приема и обработки сообщений.
