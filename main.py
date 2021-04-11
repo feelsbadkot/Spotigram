@@ -25,9 +25,10 @@ def main():
     # вляется название команды.
     dp.add_handler(CommandHandler("start", bot_functions.start))
     dp.add_handler(CommandHandler("help", bot_functions.help))
-    dp.add_handler(CommandHandler("address", bot_functions.address))
-    dp.add_handler(CommandHandler("phone", bot_functions.phone))
-    dp.add_handler(CommandHandler("site", bot_functions.site))
+    dp.add_handler(CommandHandler("search_track", bot_functions.search_track))
+    dp.add_handler(CommandHandler("search_artist", bot_functions.search_artist))
+    dp.add_handler(CommandHandler("search_album", bot_functions.search_album))
+    dp.add_handler(CommandHandler("search_playlist", bot_functions.search_playlist))
     dp.add_handler(CommandHandler("open", bot_functions.open_keyboard))
     dp.add_handler(CommandHandler("close", bot_functions.close_keyboard))
     # Регистрируем обработчик в диспетчере.
