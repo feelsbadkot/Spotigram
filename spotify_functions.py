@@ -37,27 +37,27 @@ def search_for_track(text: str):
     return total
 
 
-#  def search_for_artist(text):
-#      s = ' '.join(text.split())
-#      res = spoti.search(q=s, limit=5, type='artist', market='RU')
-#      total = []
-#      if not res['artists']['items']:
-#          result = 'По вашему запросу ничего не нашлось :('
-#          total.append(result)
-#      for i, elem in enumerate(res['artists']['items']):
-#          index = i + 1
-#          artist = elem['name']
-#          link = elem['external_urls']['spotify']
-#          genres = ', '.join(elem['genres'])
-#          image = elem['images'][0]['url']
-#          if genres:
-#              result = f'{index}. {artist} ({genres})\n{link}\n{image}'
-#          else:
-#              result = f'{index}. {artist}\n{link}\n{image}'
-#          total.append(result)
-#      if len(total) == 1:
-#          total[0] = total[0][3:]
-#      return total
+def search_for_artist(text):
+    s = ' '.join(text.split())
+    res = spoti.search(q=s, limit=5, type='artist', market='RU')
+    total = []
+    if not res['artists']['items']:
+        result = 'По вашему запросу ничего не нашлось :('
+        total.append(result)
+    for i, elem in enumerate(res['artists']['items']):
+        index = i + 1
+        artist = elem['name']
+        link = elem['external_urls']['spotify']
+        genres = ', '.join(elem['genres'])
+        image = elem['images'][0]['url']
+        if genres:
+            result = f'{index}. {artist} ({genres})\n{link}\n{image}'
+        else:
+            result = f'{index}. {artist}\n{link}\n{image}'
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
 
 
 def search_for_album(text):
