@@ -8,7 +8,7 @@ from config import *
 
 
 ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
-                             client_secret=SPOTIPY_CLIENT_SECRET)
+                               client_secret=SPOTIPY_CLIENT_SECRET)
 spoti = spotipy.Spotify(client_credentials_manager=ccm)
 
 
