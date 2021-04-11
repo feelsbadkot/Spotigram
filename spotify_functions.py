@@ -92,8 +92,29 @@ def search_for_album(text: str):
 
 
 def search_for_playlist(text: str):
-    pass
+    s = ' '.join(text.split())
+    res = spoti.search(q=s, limit=3, type='playlist', market='RU')
+    total = []
+    if not res['playlists']['items']:
+        result = 'По вашему запросу ничего не нашлось :('
+        total.append(result)
+    for i, elem in enumerate(res['playlists']['items']):
+        index = i + 1
+        link = elem['external_urls']['spotify']
+        name = elem['name']
+        length = elem['tracks']['total']
+        owner = elem['owner']['id']
+        if length != 1:
+            result = f'{index}. "{name}" by {owner} ({length} tracks)\n{link}'
+        else:
+            result = f'{index}. "{name}" by {owner} ({length} track)\n{link}'
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
 
 
+# print(*search_for_track('suicide season'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
 # print(*search_for_artist('01gfgetfeDACFA Ggaeg'), sep='\n')
+# print(*search_for_playlist('Полный фреш'), sep='\n')
