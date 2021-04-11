@@ -4,8 +4,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from config import *
-from pprint import pprint
-import sys
+# from pprint import pprint
 
 
 ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
