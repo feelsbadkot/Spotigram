@@ -178,25 +178,25 @@ def return_artist_top_tracks(data: dict):
     return total
 
 
-# def return_artist_related(data: dict):
-#     res = spoti.artist_related_artists(data['id'])
-#     related = res['artists'][:3]
-#     total = []
-#     for i, elem in enumerate(related):
-#         index = i + 1
-#         artist = elem['name']
-#         link = elem['external_urls']['spotify']
-#         genres = ', '.join(elem['genres'][:3])
-#         image = elem['images'][0]['url']
-#         fols= elem['followers']['total']
-#         if genres:
-#             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}\n{image}'
-#         else:
-#             result = f'{index}. {artist} - {fols}\n{link}\n{image}'
-#         total.append(result)
-#     if len(total) == 1:
-#         total[0] = total[0][3:]
-#     return total
+def return_artist_related(data: dict):
+    res = spoti.artist_related_artists(data['id'])
+    related = res['artists'][:3]
+    total = []
+    for i, elem in enumerate(related):
+        index = i + 1
+        artist = elem['name']
+        link = elem['external_urls']['spotify']
+        genres = ', '.join(elem['genres'][:3])
+        image = elem['images'][0]['url']
+        fols= elem['followers']['total']
+        if genres:
+            result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}\n{image}'
+        else:
+            result = f'{index}. {artist} - {fols}\n{link}\n{image}'
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
 
 
 def return_album_tracks(data: dict):
