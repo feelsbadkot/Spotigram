@@ -54,7 +54,7 @@ def search_for_artist(text: str):
         index = i + 1
         artist = elem['name']
         link = elem['external_urls']['spotify']
-        genres = ', '.join(elem['genres'])
+        genres = ', '.join(elem['genres'][:3])
         image = elem['images'][0]['url']
         fols= elem['followers']['total']
         if genres:
@@ -124,7 +124,7 @@ def return_artist(text: str):
 
 
 def return_artists_discography(data: dict): # дата это словарь, который возвращает функия выше
-    res = spoti.artist_albums(data['id'], album_type='album')
+    res = spoti.artist_albums(data['id'], album_type='album', country='RU')
     albums = res['items'][:]
     total = []
     while res['next']:
@@ -150,16 +150,63 @@ def return_artists_discography(data: dict): # дата это словарь, к
     return total
 
 
+def return_artist_top_tracks(data: dict):
+    res = spoti.artist_top_tracks(data['id'], country='RU')
+    top_tracks = res['tracks']
+    total = []
+    for i, elem in enumerate(top_tracks):
+        index = i + 1
+        artist = elem['artists'][0]['name']
+        year = elem['album']['release_date'][:4]
+        name = elem['name']
+        album = elem['album']['name']
+        minutes = elem["duration_ms"] // 60000
+        if minutes < 10:
+            minutes = '0' + str(minutes)
+        seconds = elem["duration_ms"] % 60000 // 1000
+        if seconds < 10:
+            seconds = '0' + str(seconds)
+        duration = f'{minutes}:{seconds}'
+        link = elem['external_urls']['spotify']
+        if album != name:
+            result = f'{index}. {artist} - {name} ({album}, {year}) - {duration}\n{link}'
+        else:
+            result = f'{index}. {artist} - {name} ({year}) - {duration}\n{link}'
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
+
+
+# def return_artist_related(data: dict):
+#     res = spoti.artist_related_artists(data['id'])
+#     related = res['artists'][:3]
+#     total = []
+#     for i, elem in enumerate(related):
+#         index = i + 1
+#         artist = elem['name']
+#         link = elem['external_urls']['spotify']
+#         genres = ', '.join(elem['genres'][:3])
+#         image = elem['images'][0]['url']
+#         fols= elem['followers']['total']
+#         if genres:
+#             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}\n{image}'
+#         else:
+#             result = f'{index}. {artist} - {fols}\n{link}\n{image}'
+#         total.append(result)
+#     if len(total) == 1:
+#         total[0] = total[0][3:]
+#     return total
+
+
 def return_album_tracks(data: dict):
     pass
+    
 
-
-def return_artist_top_tracks(data: dict):
-    pass
-
-
-chevelle = return_artist('Alice in chains')
-print(*return_artists_discography(chevelle), sep='\n')
+# art = return_artist('Electric Six')
+# print(*return_artist_related(art), sep='\n')
+# chevelle = return_artist('Молчат дома')
+# print(*return_artists_discography(chevelle), sep='\n')
 # pprint(return_artist('Alexisonfire'))
 # print(*search_for_track('suicide season'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
