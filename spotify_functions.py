@@ -123,32 +123,31 @@ def return_artist(text: str):
     return None
 
 
-# def return_artists_discography(data: dict): # дата это словарь, который возвращает функия выше
-#     res = spoti.artist_albums(data['id'], album_type='album')
-#     albums = res['items'][:]
-#     total = []
-#     while res['next']:
-#         res = spoti.next(res)
-#         albums.extend(res['items'])
-#     for i, elem in enumerate(albums[::-1]):
-#         index = i + 1
-#         artist = elem['artists'][0]['name']
-#         year = elem['release_date'][:4]
-#         name = elem['name']
-#         link = elem['external_urls']['spotify']
-#         album_type = elem['album_type']
-#         # genres = ', '.join(elem['genres'])
-#         cover = elem['images'][0]['url']
-#         # copyrights = elem['copyrights'][0]['text']
-#         result = f'{index}. {artist} - {name} ({year}) ' + \
-#                  f'[{album_type}]\n{link}\n{cover}\n'
-#         if any(name in i for i in total):
-#             continue
-#         total.append(result)
-#     if len(total) == 1:
-#         total[0] = total[0][3:]
-#     return total
-
+def return_artists_discography(data: dict): # дата это словарь, который возвращает функия выше
+    res = spoti.artist_albums(data['id'], album_type='album')
+    albums = res['items'][:]
+    total = []
+    while res['next']:
+        res = spoti.next(res)
+        albums.extend(res['items'])
+    for i, elem in enumerate(albums[::-1]):
+        index = i + 1
+        artist = elem['artists'][0]['name']
+        year = elem['release_date'][:4]
+        name = elem['name']
+        link = elem['external_urls']['spotify']
+        album_type = elem['album_type']
+        # genres = ', '.join(elem['genres'])
+        cover = elem['images'][0]['url']
+        # copyrights = elem['copyrights'][0]['text']
+        result = f'{index}. {artist} - {name} ({year}) ' + \
+                 f'[{album_type}]\n{link}\n{cover}\n'
+        if any(name in i for i in total):
+            continue
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
 
 
 def return_album_tracks(data: dict):
