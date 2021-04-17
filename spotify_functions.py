@@ -5,6 +5,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from config import *
 from pprint import pprint
+from random import choice
 
 
 ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
@@ -55,18 +56,27 @@ def search_for_artist(text: str):
         artist = elem['name']
         link = elem['external_urls']['spotify']
         genres = ', '.join(elem['genres'][:3])
-        image = elem['images'][0]['url']
+        if elem['images']:
+            image = elem['images'][0]['url']
+        else:
+            image = 'Картинка не нашлась'
         fols= elem['followers']['total']
         if genres:
             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
             result = f'{index}. {artist} - {fols}\n{link}'
-        total.append({'info': result, 'image': image, 
-                      'discography': return_artists_discography(elem),
-                      'top_tracks': return_artist_top_tracks(elem),
-                      'related': return_artist_related(elem)})
+        disc = return_artists_discography(elem['id'])
+        top_tracks = return_artist_top_tracks(elem['id'])
+        if return_artist_related(elem['id']):
+            related = return_artist_related(elem['id'])
+        else:
+            related = ['']
+        total.append({'info': result, 'image': image,
+                      'discography': disc,
+                      'top_tracks': top_tracks,
+                      'related': related})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
@@ -85,11 +95,10 @@ def search_for_album(text: str):
         link = elem['external_urls']['spotify']
         album_type = elem['album_type']
         cover = elem['images'][0]['url']
-        result = f'{index}. {artist} - {name} ({year}) ' + \
-                 f'[{album_type}]\n{link}'
-        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem)})
+        result = f'{index}. {artist} - {name} ({year}) [{album_type}]\n{link}'
+        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem['id'])})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
@@ -124,8 +133,8 @@ def return_artist(text: str):
     return None
 
 
-def return_artists_discography(data: dict): # дата это словарь, который возвращает функия выше
-    res = spoti.artist_albums(data['id'], album_type='album', country='RU')
+def return_artists_discography(data): # дата это словарь, который возвращает функия выше
+    res = spoti.artist_albums(data, album_type='album', country='RU')
     albums = res['items'][:]
     total = []
     while res['next']:
@@ -141,16 +150,16 @@ def return_artists_discography(data: dict): # дата это словарь, к
         cover = elem['images'][0]['url']
         result = f'{index}. {artist} - {name} ({year}) ' + \
                  f'[{album_type}]\n{link}\n{cover}\n'
-        if any(name in i for i in total):
+        if any(name in i['info'] for i in total):
             continue
-        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem)})
+        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem['id'])})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
-def return_artist_top_tracks(data: dict):
-    res = spoti.artist_top_tracks(data['id'], country='RU')
+def return_artist_top_tracks(data):
+    res = spoti.artist_top_tracks(data, country='RU')
     top_tracks = res['tracks']
     total = []
     for i, elem in enumerate(top_tracks):
@@ -177,8 +186,8 @@ def return_artist_top_tracks(data: dict):
     return total
 
 
-def return_artist_related(data: dict):
-    res = spoti.artist_related_artists(data['id'])
+def return_artist_related(data):
+    res = spoti.artist_related_artists(data)
     related = res['artists'][:3]
     total = []
     for i, elem in enumerate(related):
@@ -186,35 +195,57 @@ def return_artist_related(data: dict):
         artist = elem['name']
         link = elem['external_urls']['spotify']
         genres = ', '.join(elem['genres'][:3])
-        image = elem['images'][0]['url']
+        if elem['images']:
+            image = elem['images'][0]['url']
+        else:
+            image = 'Картинка не нашлась'
         fols= elem['followers']['total']
         if genres:
             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
             result = f'{index}. {artist} - {fols}\n{link}'
         total.append({'info': result, 'image': image, 
-                      'discography': return_artists_discography(elem),
-                      'top_tracks': return_artist_top_tracks(elem),
-                      'related': return_artist_related(elem)})
+                      'top_tracks': return_artist_top_tracks(elem['id'])})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
-def return_album_tracks(data: dict):
-    pass
-
+def return_album_tracks(data):
+    res = spoti.album_tracks(album_id=data, market='RU')
+    tracks = res['items'][:]
+    total = []
+    while res['next']:
+        res = spoti.next(res)
+        tracks.extend(res['items'])
+    for i, elem in enumerate(tracks):
+        index = i + 1
+        artist = elem['artists'][0]['name']
+        name = elem['name']
+        minutes = elem["duration_ms"] // 60000
+        if minutes < 10:
+            minutes = '0' + str(minutes)
+        seconds = elem["duration_ms"] % 60000 // 1000
+        if seconds < 10:
+            seconds = '0' + str(seconds)
+        duration = f'{minutes}:{seconds}'
+        link = elem['external_urls']['spotify']
+        result = f'{index}. {artist} - {name} - {duration}\n{link}'
+        total.append(result)
+    if len(total) == 1:
+        total[0] = total[0][3:]
+    return total
+        
 
 def return_new_releases(data: dict):
     pass
     
 
-# art = return_artist('Electric Six')
+
 # print(*return_artist_related(art), sep='\n')
 # chevelle = return_artist('Молчат дома')
 # print(*return_artists_discography(chevelle), sep='\n')
 # pprint(return_artist('Alexisonfire'))
 # print(*search_for_track('suicide season'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
-# print(*search_for_artist('Lil'), sep='\n')
 # print(*search_for_playlist('Полный фреш'), sep='\n')
