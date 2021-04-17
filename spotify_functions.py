@@ -13,7 +13,7 @@ ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
 spoti = spotipy.Spotify(client_credentials_manager=ccm)
 
 
-def search_for_track(text: str):
+def search_for_track(text):
     s = ' '.join(text.split())
     res = spoti.search(q=s, limit=5, type='track', market='RU')
     total = []
@@ -44,7 +44,7 @@ def search_for_track(text: str):
     return total
 
 
-def search_for_artist(text: str):
+def search_for_artist(text):
     s = ' '.join(text.split())
     res = spoti.search(q=s, limit=5, type='artist', market='RU')
     total = []
@@ -80,7 +80,7 @@ def search_for_artist(text: str):
     return total
 
 
-def search_for_album(text: str):
+def search_for_album(text):
     s = ' '.join(text.split())
     res = spoti.search(q=s, limit=5, type='album', market='RU')
     total = []
@@ -102,7 +102,7 @@ def search_for_album(text: str):
     return total
 
 
-def search_for_playlist(text: str):
+def search_for_playlist(text):
     s = ' '.join(text.split())
     res = spoti.search(q=s, limit=3, type='playlist', market='RU')
     total = []
@@ -125,7 +125,7 @@ def search_for_playlist(text: str):
     return total
 
 
-def return_artist(text: str):
+def return_artist(text):
     res = spoti.search(q=text, type='artist', market='RU')
     items = res['artists']['items']
     if len(items) > 0:
@@ -148,8 +148,7 @@ def return_artists_discography(data): # дата это словарь, кото
         link = elem['external_urls']['spotify']
         album_type = elem['album_type']
         cover = elem['images'][0]['url']
-        result = f'{index}. {artist} - {name} ({year}) ' + \
-                 f'[{album_type}]\n{link}\n{cover}\n'
+        result = f'{index}. {artist} - {name} ({year}) [{album_type}]\n{link}'
         if any(name in i['info'] for i in total):
             continue
         total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem['id'])})
@@ -237,11 +236,29 @@ def return_album_tracks(data):
     return total
         
 
-def return_new_releases(data: dict):
-    pass
-    
+def return_new_releases():
+    res = spoti.new_releases(country='RU', limit=5)
+    new = res['albums']['items']
+    total = []
+    for i, elem in enumerate(new):
+        index = i + 1
+        artist = elem['artists'][0]['name']
+        year = elem['release_date'][:4]
+        name = elem['name']
+        link = elem['external_urls']['spotify']
+        album_type = elem['album_type']
+        cover = elem['images'][0]['url']
+        result = f'{index}. {artist} - {name} ({year}) [{album_type}]\n{link}'
+        if any(name in i['info'] for i in total):
+            continue
+        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem['id'])})
+    if len(total) == 1:
+        total[0]['info'] = total[0]['info'][3:]
+    return total
 
 
+
+# pprint(return_new_releases())
 # print(*return_artist_related(art), sep='\n')
 # chevelle = return_artist('Молчат дома')
 # print(*return_artists_discography(chevelle), sep='\n')
