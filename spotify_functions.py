@@ -1,4 +1,4 @@
-# Здесь будут находится все функции, возвращающие необходимые нам штуки из Spotify через их API
+# Здесь будут находится все функции, возвращающие необходимые нам штуки из Spotify через API сервиса
 
 
 import spotipy
@@ -58,10 +58,13 @@ def search_for_artist(text: str):
         image = elem['images'][0]['url']
         fols= elem['followers']['total']
         if genres:
-            result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}\n{image}'
+            result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
-            result = f'{index}. {artist} - {fols}\n{link}\n{image}'
-        total.append(result)
+            result = f'{index}. {artist} - {fols}\n{link}'
+        total.append({'info': result, 'image': image, 
+                      'discography': return_artists_discography(elem),
+                      'top_tracks': return_artist_top_tracks(elem),
+                      'related': return_artist_related(elem)})
     if len(total) == 1:
         total[0] = total[0][3:]
     return total
@@ -81,12 +84,10 @@ def search_for_album(text: str):
         name = elem['name']
         link = elem['external_urls']['spotify']
         album_type = elem['album_type']
-        # genres = ', '.join(elem['genres'])
         cover = elem['images'][0]['url']
-        # copyrights = elem['copyrights'][0]['text']
         result = f'{index}. {artist} - {name} ({year}) ' + \
-                 f'[{album_type}]\n{link}\n{cover}\n'
-        total.append(result)
+                 f'[{album_type}]\n{link}'
+        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem)})
     if len(total) == 1:
         total[0] = total[0][3:]
     return total
@@ -137,14 +138,12 @@ def return_artists_discography(data: dict): # дата это словарь, к
         name = elem['name']
         link = elem['external_urls']['spotify']
         album_type = elem['album_type']
-        # genres = ', '.join(elem['genres'])
         cover = elem['images'][0]['url']
-        # copyrights = elem['copyrights'][0]['text']
         result = f'{index}. {artist} - {name} ({year}) ' + \
                  f'[{album_type}]\n{link}\n{cover}\n'
         if any(name in i for i in total):
             continue
-        total.append(result)
+        total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem)})
     if len(total) == 1:
         total[0] = total[0][3:]
     return total
@@ -190,16 +189,23 @@ def return_artist_related(data: dict):
         image = elem['images'][0]['url']
         fols= elem['followers']['total']
         if genres:
-            result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}\n{image}'
+            result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
-            result = f'{index}. {artist} - {fols}\n{link}\n{image}'
-        total.append(result)
+            result = f'{index}. {artist} - {fols}\n{link}'
+        total.append({'info': result, 'image': image, 
+                      'discography': return_artists_discography(elem),
+                      'top_tracks': return_artist_top_tracks(elem),
+                      'related': return_artist_related(elem)})
     if len(total) == 1:
         total[0] = total[0][3:]
     return total
 
 
 def return_album_tracks(data: dict):
+    pass
+
+
+def return_new_releases(data: dict):
     pass
     
 
