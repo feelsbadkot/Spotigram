@@ -12,7 +12,7 @@ from random import choice
 ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                    client_secret=SPOTIPY_CLIENT_SECRET,
                    redirect_uri=SPOTIPY_REDIRECT_URI,
-                   scope=scope)
+                   scope=SCOPE)
 spoti = spotipy.Spotify(client_credentials_manager=ccm)
 
 
