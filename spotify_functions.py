@@ -2,14 +2,22 @@
 
 
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
+from spotipy.util import prompt_for_user_token
 from config import *
 from pprint import pprint
 from random import choice
+from time import sleep
 
 
-ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
-                               client_secret=SPOTIPY_CLIENT_SECRET)
+scope = "user-read-playback-state,user-modify-playback-state"
+# ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
+#                                client_secret=SPOTIPY_CLIENT_SECRET)
+ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
+                     client_secret=SPOTIPY_CLIENT_SECRET,
+                     redirect_uri=SPOTIPY_REDIRECT_URI,
+                     scope=scope)
+# spoti = spotipy.Spotify(client_credentials_manager=ccm)
 spoti = spotipy.Spotify(client_credentials_manager=ccm)
 
 
@@ -38,9 +46,9 @@ def search_for_track(text):
             result = f'{index}. {artist} - {name} ({album}, {year}) - {duration}\n{link}'
         else:
             result = f'{index}. {artist} - {name} ({year}) - {duration}\n{link}'
-        total.append(result)
+        total.append({'info': result, 'uri': elem['uri']})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
@@ -133,7 +141,7 @@ def return_artist(text):
     return None
 
 
-def return_artists_discography(data): # дата это словарь, который возвращает функия выше
+def return_artists_discography(data): 
     res = spoti.artist_albums(data, album_type='album', country='RU')
     albums = res['items'][:]
     total = []
@@ -179,9 +187,9 @@ def return_artist_top_tracks(data):
             result = f'{index}. {artist} - {name} ({album}, {year}) - {duration}\n{link}'
         else:
             result = f'{index}. {artist} - {name} ({year}) - {duration}\n{link}'
-        total.append(result)
+        total.append({'info': result, 'uri': elem['uri']})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
 
 
@@ -230,9 +238,9 @@ def return_album_tracks(data):
         duration = f'{minutes}:{seconds}'
         link = elem['external_urls']['spotify']
         result = f'{index}. {artist} - {name} - {duration}\n{link}'
-        total.append(result)
+        total.append({'info': result, 'uri': elem['uri']})
     if len(total) == 1:
-        total[0] = total[0][3:]
+        total[0]['info'] = total[0]['info'][3:]
     return total
         
 
@@ -257,10 +265,29 @@ def return_new_releases():
     return total
 
 
+def play():
+    spoti.start_playback()
 
+
+def pause():
+    spoti.pause_playback()
+
+
+def next_track():
+    spoti.next_track()
+
+
+def previous_track():
+    spoti.previous_track()
+
+
+def start_playing_track(data):
+    spoti.start_playback(uris=[data])
+
+
+# start_playing_track(search_for_track('Punk song')[4]['uri'])
 # pprint(return_new_releases())
-# print(*return_artist_related(art), sep='\n')
-# chevelle = return_artist('Молчат дома')
+# chevelle = return_artist('Молчат дома')['id']
 # print(*return_artists_discography(chevelle), sep='\n')
 # pprint(return_artist('Alexisonfire'))
 # print(*search_for_track('suicide season'), sep='\n')
