@@ -7,17 +7,12 @@ from spotipy.util import prompt_for_user_token
 from config import *
 from pprint import pprint
 from random import choice
-from time import sleep
 
 
-scope = "user-read-playback-state,user-modify-playback-state"
-# ccm = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, 
-#                                client_secret=SPOTIPY_CLIENT_SECRET)
 ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
-                     client_secret=SPOTIPY_CLIENT_SECRET,
-                     redirect_uri=SPOTIPY_REDIRECT_URI,
-                     scope=scope)
-# spoti = spotipy.Spotify(client_credentials_manager=ccm)
+                   client_secret=SPOTIPY_CLIENT_SECRET,
+                   redirect_uri=SPOTIPY_REDIRECT_URI,
+                   scope=scope)
 spoti = spotipy.Spotify(client_credentials_manager=ccm)
 
 
