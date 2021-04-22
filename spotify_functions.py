@@ -8,7 +8,6 @@ from config import *
 from pprint import pprint
 from random import choice
 
-
 ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                    client_secret=SPOTIPY_CLIENT_SECRET,
                    redirect_uri=SPOTIPY_REDIRECT_URI,
@@ -63,7 +62,7 @@ def search_for_artist(text):
             image = elem['images'][0]['url']
         else:
             image = 'Картинка не нашлась'
-        fols= elem['followers']['total']
+        fols = elem['followers']['total']
         if genres:
             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
@@ -136,7 +135,7 @@ def return_artist(text):
     return None
 
 
-def return_artists_discography(data): 
+def return_artists_discography(data):
     res = spoti.artist_albums(data, album_type='album', country='RU')
     albums = res['items'][:]
     total = []
@@ -201,12 +200,12 @@ def return_artist_related(data):
             image = elem['images'][0]['url']
         else:
             image = 'Картинка не нашлась'
-        fols= elem['followers']['total']
+        fols = elem['followers']['total']
         if genres:
             result = f'{index}. {artist} ({genres}) - {fols} followers\n{link}'
         else:
             result = f'{index}. {artist} - {fols}\n{link}'
-        total.append({'info': result, 'image': image, 
+        total.append({'info': result, 'image': image,
                       'top_tracks': return_artist_top_tracks(elem['id'])})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
@@ -237,7 +236,7 @@ def return_album_tracks(data):
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
     return total
-        
+
 
 def return_new_releases():
     res = spoti.new_releases(country='RU', limit=5)
@@ -279,12 +278,11 @@ def previous_track():
 def start_playing_track(data):
     spoti.start_playback(uris=[data])
 
-
 # start_playing_track(search_for_track('Punk song')[4]['uri'])
 # pprint(return_new_releases())
 # chevelle = return_artist('Молчат дома')['id']
 # print(*return_artists_discography(chevelle), sep='\n')
 # pprint(return_artist('Alexisonfire'))
-# print(*search_for_track('suicide season'), sep='\n')
+# print(*search_for_track('Валентина'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
 # print(*search_for_playlist('Полный фреш'), sep='\n')

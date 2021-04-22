@@ -38,6 +38,7 @@ def button(update: Update, _: CallbackContext) -> None:
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
 
+    update.message.reply_text('уоуоуоу')
     query.edit_message_text(text=f"Selected option: {query.data}")
 
 
@@ -47,7 +48,7 @@ def help_command(update: Update, _: CallbackContext) -> None:
 
 def main() -> None:
     # Create the Updater and pass it your bot's token.
-    updater = Updater(TOKEN)
+    updater = Updater("1745746821:AAHjv-VrhPzVyBYZIDBwr4lDpY2lFXUE5is")
 
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
