@@ -131,7 +131,16 @@ def search_playlist(update: Update, context: CallbackContext):
             update.message.reply_text(pl)
 
 
-
+def search_novelty(update: Update, context: CallbackContext):
+    if update.message.text == BACK_TEXT2:
+        update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
+    elif update.message.text == HELP_TEXT:
+        help(update=update, context=context)
+    else:
+        novelty_list = return_new_releases()
+        for nov in novelty_list:
+            update.message.reply_text(nov['info'])
+            update.message.reply_text("\n".join(nov['tracks']))
 
 
 def choice_options(update: Update, context: CallbackContext, option):
