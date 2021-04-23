@@ -171,7 +171,7 @@ def return_artists_discography(data):
 
 def return_artist_top_tracks(data):
     res = spoti2.artist_top_tracks(data, country='RU')
-    top_tracks = res['tracks']
+    top_tracks = res['tracks'][:5]
     total = []
     for i, elem in enumerate(top_tracks):
         index = i + 1
@@ -303,3 +303,5 @@ def start_playing_track(data):
 # print(*search_for_album('there is a hell believe me'), sep='\n')
 # print(*search_for_playlist('Полный фреш'), sep='\n')
 # pprint(search_for_album('опиаты круг'))
+# a = return_artist('Kyuss')['id']
+# print(return_artist_top_tracks(a))
