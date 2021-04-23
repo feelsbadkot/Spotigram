@@ -115,7 +115,9 @@ def search_playlist(update: Update, context: CallbackContext):
     else:
         context.user_data['playlist'] = update.message.text
         # update.message.reply_text(*search_for_playlist(context.user_data['playlist']))
-        print(*search_for_artist(context.user_data['playlist']))
+        playlist_list = search_for_playlist(context.user_data['playlist'])
+        for pl in playlist_list:
+            update.message.reply_text(pl)
 
 
 def choice_options(update: Update, context: CallbackContext, option):
