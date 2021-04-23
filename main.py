@@ -47,7 +47,7 @@ def main():
     dp.add_handler(CommandHandler("search_album", search_album))
     dp.add_handler(CommandHandler("search_playlist", search_playlist))
     dp.add_handler(CommandHandler("search", search))
-    dp.add_handler(CommandHandler("open", keyboard1))
+    dp.add_handler(CommandHandler("open", open_keyboard))
     dp.add_handler(CommandHandler("close", close_keyboard))
     #dp.add_handler(CallbackQueryHandler(keyboard_callback_handler))
     dp.add_handler(text_handler)

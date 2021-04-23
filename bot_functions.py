@@ -3,7 +3,7 @@ from telegram.ext import MessageHandler, Filters, CallbackQueryHandler, Conversa
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
 from spotify_functions import search_for_track, search_for_artist, search_for_album, \
-    search_for_playlist
+    search_for_playlist, return_new_releases
 import logging
 from config import TOKEN
 from keyboards import *
@@ -13,17 +13,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 # названия кнопок
-search_text = '🔍Поиск'
-help_text = '🍼Помощь'
-back_text = '⬅️Назад'
-back_text2 = '⬅️Вернуться к опциям'
+SEARCH_TEXT = '🔍Поиск'
+HELP_TEXT = '🍼Помощь'
+BACK_TEXT = '⬅️Назад'
+BACK_TEXT2 = '⬅️Вернуться к опциям'
 
 CALLBACK_SEARCH_TRACK = '🎧Найти трек'
 CALLBACK_SEARCH_ARTIST = '🎤Найти исполнителя'
 CALLBACK_SEARCH_ALBUM = '🎸Найти альбом'
 CALLBACK_SEARCH_PLAYLIST = '⭐️Найти плейлист'
+CALLBACK_SEARCH_NOVELTY = '🤡Новинки'
 
 
 # лог-декоратор
@@ -48,15 +48,19 @@ def start(update: Update, context: CallbackContext):
     update.message.reply_text("Выберете опцию", reply_markup=keyboard1())
 
 
+def open_keyboard(update: Update, context: CallbackContext):
+    update.message.reply_text("Клавиатура открыта", reply_markup=keyboard1())
+
+
 def echo(update: Update, context: CallbackContext):
     text = update.message.text
-    if text == search_text:
+    if text == SEARCH_TEXT:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif text == back_text:
+    elif text == BACK_TEXT:
         update.message.reply_text("Выберете опцию", reply_markup=keyboard1())
-    elif text == back_text2:
+    elif text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif text == help_text:
+    elif text == HELP_TEXT:
         help(update=update, context=context)
     elif text == CALLBACK_SEARCH_TRACK:
         choice_options(update=update, context=context, option=CALLBACK_SEARCH_TRACK)
@@ -66,6 +70,8 @@ def echo(update: Update, context: CallbackContext):
         choice_options(update=update, context=context, option=CALLBACK_SEARCH_ALBUM)
     elif text == CALLBACK_SEARCH_PLAYLIST:
         choice_options(update=update, context=context, option=CALLBACK_SEARCH_PLAYLIST)
+    elif text == CALLBACK_SEARCH_NOVELTY:
+        search_novelty(update=update, context=context)
 
     else:
         update.message.reply_text(f'Я не знаю что ответить на "{update.message.text}"')
@@ -73,9 +79,9 @@ def echo(update: Update, context: CallbackContext):
 
 
 def search_track(update: Update, context: CallbackContext):
-    if update.message.text == back_text2:
+    if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif update.message.text == help_text:
+    elif update.message.text == HELP_TEXT:
         help(update=update, context=context)
     else:
         context.user_data['track'] = update.message.text
@@ -86,31 +92,36 @@ def search_track(update: Update, context: CallbackContext):
 
 
 def search_artist(update: Update, context: CallbackContext):
-    if update.message.text == back_text2:
+    if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif update.message.text == help_text:
+    elif update.message.text == HELP_TEXT:
         help(update=update, context=context)
     else:
-        context.user_data['artist'] = update.message.text
-        # update.message.reply_text(*search_for_artist(context.user_data['track']))
-        print(*search_for_artist(context.user_data['artist']))
+        context.user_data['artists'] = update.message.text
+        artists_list = search_for_artist(context.user_data['artists'])
+        for artist in artists_list:
+            update.message.reply_text(artist['info'])
+            update.message.reply_text('\n'.join(artist['top_tracks']))
 
 
 def search_album(update: Update, context: CallbackContext):
-    if update.message.text == back_text2:
+    if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif update.message.text == help_text:
+    elif update.message.text == HELP_TEXT:
         help(update=update, context=context)
     else:
         context.user_data['album'] = update.message.text
         # update.message.reply_text(*search_for_album(context.user_data['album']))
-        print(*search_for_artist(context.user_data['album']))
+        album_list = search_for_album(context.user_data['album'])
+        for album in album_list:
+            update.message.reply_text(album['info'])
+            update.message.reply_text("\n".join(album['tracks']))
 
 
 def search_playlist(update: Update, context: CallbackContext):
-    if update.message.text == back_text2:
+    if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
-    elif update.message.text == help_text:
+    elif update.message.text == HELP_TEXT:
         help(update=update, context=context)
     else:
         context.user_data['playlist'] = update.message.text
@@ -118,6 +129,9 @@ def search_playlist(update: Update, context: CallbackContext):
         playlist_list = search_for_playlist(context.user_data['playlist'])
         for pl in playlist_list:
             update.message.reply_text(pl)
+
+
+
 
 
 def choice_options(update: Update, context: CallbackContext, option):
@@ -138,14 +152,14 @@ def choice_options(update: Update, context: CallbackContext, option):
 
 def search(update: Update, context: CallbackContext):
     if opt == 1:
-        update.message.reply_text("Введите название трека")
+        update.message.reply_text("Введите название трека", reply_markup=close_keyboard())
         return opt
     if opt == 2:
-        update.message.reply_text("Введите имя исполнителя")
+        update.message.reply_text("Введите имя исполнителя", reply_markup=close_keyboard())
         return opt
     if opt == 3:
-        update.message.reply_text("Введите название альбома")
+        update.message.reply_text("Введите название альбома", reply_markup=close_keyboard())
         return opt
     if opt == 4:
-        update.message.reply_text("Введите название плейлиста")
+        update.message.reply_text("Введите название плейлиста", reply_markup=close_keyboard())
         return opt

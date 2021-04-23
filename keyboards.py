@@ -2,19 +2,20 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboard
     InlineKeyboardMarkup
 from telegram import ReplyKeyboardRemove
 
-search_text = '🔍Поиск'
-help_text = '🍼Помощь'
-back_text = '⬅️Назад'
-back_text2 = '⬅️Вернуться к опциям'
+SEARCH_TEXT = '🔍Поиск'
+HELP_TEXT = '🍼Помощь'
+BACK_TEXT = '⬅️Назад'
+BACK_TEXT2 = '⬅️Вернуться к опциям'
 
 CALLBACK_SEARCH_TRACK = '🎧Найти трек'
 CALLBACK_SEARCH_ARTIST = '🎤Найти исполнителя'
 CALLBACK_SEARCH_ALBUM = '🎸Найти альбом'
 CALLBACK_SEARCH_PLAYLIST = '⭐️Найти плейлист'
+CALLBACK_SEARCH_NOVELTY = '🤡Новинки'
 
 
 def keyboard1():
-    reply_keyboard = [[KeyboardButton(text=search_text), KeyboardButton(text=help_text)]]
+    reply_keyboard = [[KeyboardButton(text=SEARCH_TEXT), KeyboardButton(text=HELP_TEXT)]]
     return ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True, one_time_keyboard=False)
 
 
@@ -29,8 +30,8 @@ def keyboard2():
             KeyboardButton(CALLBACK_SEARCH_PLAYLIST)
         ],
         [
-            KeyboardButton(back_text),
-            KeyboardButton(help_text)
+            KeyboardButton(BACK_TEXT),
+            KeyboardButton(CALLBACK_SEARCH_NOVELTY)
         ],
     ]
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
@@ -40,7 +41,7 @@ def keyboard3():
     keyboard = [
         [
             KeyboardButton("/search"),
-            KeyboardButton(back_text2)]
+            KeyboardButton(BACK_TEXT2)]
     ]
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
 
