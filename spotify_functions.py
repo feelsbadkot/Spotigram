@@ -247,7 +247,7 @@ def return_album_tracks(data):
         total.append({'info': result, 'uri': elem['uri']})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
-    return total
+    return [track['info'] for track in total]
 
 
 def return_new_releases():
@@ -302,4 +302,4 @@ def start_playing_track(data):
 # print(*search_for_track('Валентина'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
 # print(*search_for_playlist('Полный фреш'), sep='\n')
-pprint(search_for_album('Icky thump'))
+# pprint(search_for_album('опиаты круг'))
