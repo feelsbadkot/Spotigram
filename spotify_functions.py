@@ -72,7 +72,7 @@ def search_for_artist(text):
         if return_artist_related(elem['id']):
             related = return_artist_related(elem['id'])
         else:
-            related = ['']
+            related = []
         total.append({'info': result, 'image': image,
                       'discography': disc,
                       'top_tracks': top_tracks,
@@ -209,7 +209,7 @@ def return_artist_related(data):
                       'top_tracks': return_artist_top_tracks(elem['id'])})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
-    return total
+    return choice(total)
 
 
 def return_album_tracks(data):
