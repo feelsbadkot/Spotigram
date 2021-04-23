@@ -12,7 +12,10 @@ ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                    client_secret=SPOTIPY_CLIENT_SECRET,
                    redirect_uri=SPOTIPY_REDIRECT_URI,
                    scope=SCOPE)
-spoti = spotipy.Spotify(client_credentials_manager=ccm)
+
+spoti = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
+    client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET
+))
 
 
 def search_for_track(text):
@@ -22,6 +25,7 @@ def search_for_track(text):
     if not res['tracks']['items']:
         result = 'По вашему запросу ничего не нашлось :('
         total.append(result)
+        return total
     for i, elem in enumerate(res['tracks']['items']):
         index = i + 1
         artist = elem['artists'][0]['name']
@@ -53,6 +57,7 @@ def search_for_artist(text):
     if not res['artists']['items']:
         result = '): По вашему запросу ничего не нашлось :('
         total.append(result)
+        return total
     for i, elem in enumerate(res['artists']['items']):
         index = i + 1
         artist = elem['name']
@@ -111,6 +116,7 @@ def search_for_playlist(text):
     if not res['playlists']['items']:
         result = '): По вашему запросу ничего не нашлось :('
         total.append(result)
+        return total
     for i, elem in enumerate(res['playlists']['items']):
         index = i + 1
         link = elem['external_urls']['spotify']
@@ -209,7 +215,9 @@ def return_artist_related(data):
                       'top_tracks': return_artist_top_tracks(elem['id'])})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
-    return choice(total)
+    if total:
+        return choice(total)
+    return []
 
 
 def return_album_tracks(data):
@@ -277,6 +285,7 @@ def previous_track():
 
 def start_playing_track(data):
     spoti.start_playback(uris=[data])
+
 
 # start_playing_track(search_for_track('Punk song')[4]['uri'])
 # pprint(return_new_releases())
