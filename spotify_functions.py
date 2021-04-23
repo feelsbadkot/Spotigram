@@ -166,7 +166,7 @@ def return_artists_discography(data):
         total.append({'info': result, 'cover': cover, 'tracks': return_album_tracks(elem['id'])})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
-    return total
+    return [album['info'] for album in total]
 
 
 def return_artist_top_tracks(data):
@@ -194,7 +194,7 @@ def return_artist_top_tracks(data):
         total.append({'info': result, 'uri': elem['uri']})
     if len(total) == 1:
         total[0]['info'] = total[0]['info'][3:]
-    return total
+    return [track['info'] for track in total]
 
 
 def return_artist_related(data):
