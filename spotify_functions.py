@@ -3,24 +3,26 @@
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-from spotipy.util import prompt_for_user_token
 from config import *
 from pprint import pprint
 from random import choice
 
-ccm = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
-                   client_secret=SPOTIPY_CLIENT_SECRET,
-                   redirect_uri=SPOTIPY_REDIRECT_URI,
-                   scope=SCOPE)
+ccm1 = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
+                    client_secret=SPOTIPY_CLIENT_SECRET,
+                    redirect_uri=SPOTIPY_REDIRECT_URI,
+                    scope=SCOPE)
 
-spoti = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
-    client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET
-))
+ccm2 = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
+                                client_secret=SPOTIPY_CLIENT_SECRET)
+
+
+spoti1 = spotipy.Spotify(client_credentials_manager=ccm1)
+spoti2 = spotipy.Spotify(client_credentials_manager=ccm2)
 
 
 def search_for_track(text):
     s = ' '.join(text.split())
-    res = spoti.search(q=s, limit=5, type='track', market='RU')
+    res = spoti2.search(q=s, limit=5, type='track', market='RU')
     total = []
     if not res['tracks']['items']:
         result = 'По вашему запросу ничего не нашлось :('
@@ -52,7 +54,7 @@ def search_for_track(text):
 
 def search_for_artist(text):
     s = ' '.join(text.split())
-    res = spoti.search(q=s, limit=5, type='artist', market='RU')
+    res = spoti2.search(q=s, limit=5, type='artist', market='RU')
     total = []
     if not res['artists']['items']:
         result = '): По вашему запросу ничего не нашлось :('
@@ -89,7 +91,7 @@ def search_for_artist(text):
 
 def search_for_album(text):
     s = ' '.join(text.split())
-    res = spoti.search(q=s, limit=5, type='album', market='RU')
+    res = spoti2.search(q=s, limit=5, type='album', market='RU')
     total = []
     if not res['albums']['items']:
         result = '): По вашему запросу ничего не нашлось :('
@@ -111,7 +113,7 @@ def search_for_album(text):
 
 def search_for_playlist(text):
     s = ' '.join(text.split())
-    res = spoti.search(q=s, limit=3, type='playlist', market='RU')
+    res = spoti2.search(q=s, limit=3, type='playlist', market='RU')
     total = []
     if not res['playlists']['items']:
         result = '): По вашему запросу ничего не нашлось :('
@@ -134,7 +136,7 @@ def search_for_playlist(text):
 
 
 def return_artist(text):
-    res = spoti.search(q=text, type='artist', market='RU')
+    res = spoti2.search(q=text, type='artist', market='RU')
     items = res['artists']['items']
     if len(items) > 0:
         return items[0]
@@ -142,11 +144,11 @@ def return_artist(text):
 
 
 def return_artists_discography(data):
-    res = spoti.artist_albums(data, album_type='album', country='RU')
+    res = spoti2.artist_albums(data, album_type='album', country='RU')
     albums = res['items'][:]
     total = []
     while res['next']:
-        res = spoti.next(res)
+        res = spoti2.next(res)
         albums.extend(res['items'])
     for i, elem in enumerate(albums[::-1]):
         index = i + 1
@@ -166,7 +168,7 @@ def return_artists_discography(data):
 
 
 def return_artist_top_tracks(data):
-    res = spoti.artist_top_tracks(data, country='RU')
+    res = spoti2.artist_top_tracks(data, country='RU')
     top_tracks = res['tracks']
     total = []
     for i, elem in enumerate(top_tracks):
@@ -194,7 +196,7 @@ def return_artist_top_tracks(data):
 
 
 def return_artist_related(data):
-    res = spoti.artist_related_artists(data)
+    res = spoti2.artist_related_artists(data)
     related = res['artists'][:3]
     total = []
     for i, elem in enumerate(related):
@@ -221,11 +223,11 @@ def return_artist_related(data):
 
 
 def return_album_tracks(data):
-    res = spoti.album_tracks(album_id=data, market='RU')
+    res = spoti2.album_tracks(album_id=data, market='RU')
     tracks = res['items'][:]
     total = []
     while res['next']:
-        res = spoti.next(res)
+        res = spoti2.next(res)
         tracks.extend(res['items'])
     for i, elem in enumerate(tracks):
         index = i + 1
@@ -247,7 +249,7 @@ def return_album_tracks(data):
 
 
 def return_new_releases():
-    res = spoti.new_releases(country='RU', limit=5)
+    res = spoti2.new_releases(country='RU', limit=5)
     new = res['albums']['items']
     total = []
     for i, elem in enumerate(new):
@@ -268,26 +270,29 @@ def return_new_releases():
 
 
 def play():
-    spoti.start_playback()
+    spoti1.start_playback()
 
 
 def pause():
-    spoti.pause_playback()
+    spoti1.pause_playback()
 
 
 def next_track():
-    spoti.next_track()
+    spoti1.next_track()
 
 
 def previous_track():
-    spoti.previous_track()
+    spoti1.previous_track()
 
 
 def start_playing_track(data):
-    spoti.start_playback(uris=[data])
+    try:
+        spoti1.start_playback(uris=[data])
+    except Exception:
+        pass
 
 
-# start_playing_track(search_for_track('Punk song')[4]['uri'])
+# start_playing_track(search_for_track('Хаски Реванш')[0]['uri'])
 # pprint(return_new_releases())
 # chevelle = return_artist('Молчат дома')['id']
 # print(*return_artists_discography(chevelle), sep='\n')
