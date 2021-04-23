@@ -10,7 +10,8 @@ from random import choice
 ccm1 = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                     client_secret=SPOTIPY_CLIENT_SECRET,
                     redirect_uri=SPOTIPY_REDIRECT_URI,
-                    scope=SCOPE)
+                    scope=SCOPE,
+                    username='s4hwshxdd146amglz9f9y4n30')
 
 ccm2 = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                 client_secret=SPOTIPY_CLIENT_SECRET)
@@ -96,6 +97,7 @@ def search_for_album(text):
     if not res['albums']['items']:
         result = '): По вашему запросу ничего не нашлось :('
         total.append(result)
+        return total
     for i, elem in enumerate(res['albums']['items']):
         index = i + 1
         artist = elem['artists'][0]['name']
@@ -300,3 +302,4 @@ def start_playing_track(data):
 # print(*search_for_track('Валентина'), sep='\n')
 # print(*search_for_album('there is a hell believe me'), sep='\n')
 # print(*search_for_playlist('Полный фреш'), sep='\n')
+pprint(search_for_album('Icky thump'))
