@@ -85,10 +85,12 @@ def search_track(update: Update, context: CallbackContext):
         help(update=update, context=context)
     else:
         context.user_data['track'] = update.message.text
-        # update.message.reply_text(*search_for_track(context.user_data['track']))
         track_list = search_for_track(context.user_data['track'])
         for song in track_list:
             update.message.reply_text(song['info'])
+        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
+                                  reply_markup=back_keyboard())
+    return ConversationHandler.END
 
 
 def search_artist(update: Update, context: CallbackContext):
@@ -102,6 +104,11 @@ def search_artist(update: Update, context: CallbackContext):
         for artist in artists_list:
             update.message.reply_text(artist['info'])
             update.message.reply_text('\n'.join(artist['top_tracks']))
+            update.effective_message.reply_text('\n'.join(artist['discography']))
+            update.message.reply_text('-' * 81)
+        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
+                                  reply_markup=back_keyboard())
+    return ConversationHandler.END
 
 
 def search_album(update: Update, context: CallbackContext):
@@ -111,11 +118,14 @@ def search_album(update: Update, context: CallbackContext):
         help(update=update, context=context)
     else:
         context.user_data['album'] = update.message.text
-        # update.message.reply_text(*search_for_album(context.user_data['album']))
         album_list = search_for_album(context.user_data['album'])
         for album in album_list:
             update.message.reply_text(album['info'])
             update.message.reply_text("\n".join(album['tracks']))
+            update.message.reply_text('-' * 81)
+        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
+                                  reply_markup=back_keyboard())
+    return ConversationHandler.END
 
 
 def search_playlist(update: Update, context: CallbackContext):
@@ -125,10 +135,12 @@ def search_playlist(update: Update, context: CallbackContext):
         help(update=update, context=context)
     else:
         context.user_data['playlist'] = update.message.text
-        # update.message.reply_text(*search_for_playlist(context.user_data['playlist']))
         playlist_list = search_for_playlist(context.user_data['playlist'])
         for pl in playlist_list:
             update.message.reply_text(pl)
+        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
+                                  reply_markup=back_keyboard())
+    return ConversationHandler.END
 
 
 def search_novelty(update: Update, context: CallbackContext):
@@ -141,6 +153,10 @@ def search_novelty(update: Update, context: CallbackContext):
         for nov in novelty_list:
             update.message.reply_text(nov['info'])
             update.message.reply_text("\n".join(nov['tracks']))
+            update.message.reply_text('-' * 81)
+        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
+                                  reply_markup=back_keyboard())
+    return ConversationHandler.END
 
 
 def choice_options(update: Update, context: CallbackContext, option):

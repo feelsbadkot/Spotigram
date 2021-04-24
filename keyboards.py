@@ -46,6 +46,14 @@ def keyboard3():
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
 
 
+def back_keyboard():
+    keyboard = [
+        [
+            KeyboardButton(BACK_TEXT2)]
+    ]
+    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
+
+
 def close_keyboard():
     return ReplyKeyboardRemove()
 
