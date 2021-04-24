@@ -44,8 +44,9 @@ def help(update: Update, context: CallbackContext):
 
 
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text('Привет я SpotiGram')
-    update.message.reply_text("Выберете опцию", reply_markup=keyboard1())
+    update.message.reply_text(
+        'Привет я SpotiGram - твой помощник в мире музыки.\nНажимайте на поиск и погнали!',
+        reply_markup=keyboard1())
 
 
 def open_keyboard(update: Update, context: CallbackContext):
@@ -72,7 +73,6 @@ def echo(update: Update, context: CallbackContext):
         choice_options(update=update, context=context, option=CALLBACK_SEARCH_PLAYLIST)
     elif text == CALLBACK_SEARCH_NOVELTY:
         search_novelty(update=update, context=context)
-
     else:
         update.message.reply_text(f'Я не знаю что ответить на "{update.message.text}"')
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -103,7 +103,9 @@ def search_artist(update: Update, context: CallbackContext):
         artists_list = search_for_artist(context.user_data['artists'])
         for artist in artists_list:
             update.message.reply_text(artist['info'])
+            update.message.reply_text('Топ треков:')
             update.message.reply_text('\n'.join(artist['top_tracks']))
+            update.message.reply_text('Дискография:')
             update.effective_message.reply_text('\n'.join(artist['discography']))
             update.message.reply_text('-' * 81)
         update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
