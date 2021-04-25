@@ -5,7 +5,6 @@ from telegram.ext import CommandHandler
 from spotify_functions import search_for_track, search_for_artist, search_for_album, \
     search_for_playlist, return_new_releases
 import logging
-from config import TOKEN
 from keyboards import *
 
 logging.basicConfig(
@@ -40,7 +39,7 @@ def log_error(f):
 
 def help(update: Update, context: CallbackContext):
     update.message.reply_text(
-        "Нажмите на клавиатуре поиск(если нет клавиатуры напишите /open)")
+        "Нажмите на клавиатуре поиск (если нет клавиатуры напишите /open)")
 
 
 def start(update: Update, context: CallbackContext):
@@ -89,7 +88,7 @@ def search_track(update: Update, context: CallbackContext):
         for song in track_list:
             update.message.reply_text(song['info'])
         update.message.reply_text("Введите другой трек или выберете другую опцию",
-                                  reply_markup=back_keyboard())
+                                  reply_markup=keyboard3())
     return ConversationHandler.END
 
 
@@ -109,8 +108,8 @@ def search_artist(update: Update, context: CallbackContext):
                 update.effective_message.reply_text('Дискография:\n' + 
                                                     '\n'.join(artist['discography']))
             update.message.reply_text(' - ' * 10)
-        update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
-                                  reply_markup=back_keyboard())
+        update.message.reply_text("Нажмите на /search чтобы найти другого исполнителя или выберете другую опцию",
+                                  reply_markup=keyboard3())
     return ConversationHandler.END
 
 
@@ -126,8 +125,8 @@ def search_album(update: Update, context: CallbackContext):
             update.message.reply_text(album['info'])
             update.message.reply_text("\n".join(album['tracks']))
             update.message.reply_text(' - ' * 10)
-        update.message.reply_text("Введите другой альбом или выберете другую опцию",
-                                  reply_markup=back_keyboard())
+        update.message.reply_text("Нажмите на /search чтобы найти другой альбом или выберете другую опцию",
+                                  reply_markup=keyboard3())
     return ConversationHandler.END
 
 
@@ -141,8 +140,8 @@ def search_playlist(update: Update, context: CallbackContext):
         playlist_list = search_for_playlist(context.user_data['playlist'])
         for pl in playlist_list:
             update.message.reply_text(pl)
-        update.message.reply_text("Введите другой плейлист или выберете другую опцию",
-                                  reply_markup=back_keyboard())
+        update.message.reply_text("Нажмите на /search чтобы найти другой плейлист или выберете другую опцию",
+                                  reply_markup=keyboard3())
     return ConversationHandler.END
 
 
