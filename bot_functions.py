@@ -82,8 +82,9 @@ def search_track(update: Update, context: CallbackContext):
         track_list = search_for_track(context.user_data['track'])
         for song in track_list:
             update.message.reply_text(song['info'])
-        update.message.reply_text("Введите другой трек или выберете другую опцию",
-                                  reply_markup=keyboard3())
+        update.message.reply_text(
+            "Нажмите на /search чтобы найти другой трек или выберете другую опцию",
+            reply_markup=keyboard3())
     return ConversationHandler.END
 
 
