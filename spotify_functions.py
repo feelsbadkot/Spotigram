@@ -12,7 +12,7 @@ ccm1 = SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                     client_secret=SPOTIPY_CLIENT_SECRET,
                     redirect_uri=SPOTIPY_REDIRECT_URI,
                     scope=SCOPE,
-                    username='')
+                    username='Тут должен быть ваш spotify id')
 # Менеджер для всех остальных запросов
 ccm2 = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                 client_secret=SPOTIPY_CLIENT_SECRET)
