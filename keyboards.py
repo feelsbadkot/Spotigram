@@ -1,17 +1,8 @@
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, \
     InlineKeyboardMarkup
 from telegram import ReplyKeyboardRemove
-
-SEARCH_TEXT = '🔍Поиск'
-HELP_TEXT = '🍼Помощь'
-BACK_TEXT = '⬅️Назад'
-BACK_TEXT2 = '⬅️Вернуться к опциям'
-
-CALLBACK_SEARCH_TRACK = '🎧Найти трек'
-CALLBACK_SEARCH_ARTIST = '🎤Найти исполнителя'
-CALLBACK_SEARCH_ALBUM = '🎸Найти альбом'
-CALLBACK_SEARCH_PLAYLIST = '⭐️Найти плейлист'
-CALLBACK_SEARCH_NOVELTY = '🤡Новинки'
+from config import *
+# файл со всеми экземплярами клавиатур
 
 
 def keyboard1():
@@ -56,15 +47,3 @@ def back_keyboard():
 
 def close_keyboard():
     return ReplyKeyboardRemove()
-
-
-def inline_keyboard():
-    keyboard = [
-        [
-            InlineKeyboardButton("Option 1", callback_data='1'),
-            InlineKeyboardButton("Option 2", callback_data='2'),
-        ],
-        [InlineKeyboardButton("Option 3", callback_data='3')],
-    ]
-
-    return InlineKeyboardMarkup(keyboard)

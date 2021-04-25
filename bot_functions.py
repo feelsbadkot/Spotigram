@@ -5,24 +5,14 @@ from telegram.ext import CommandHandler
 from spotify_functions import search_for_track, search_for_artist, search_for_album, \
     search_for_playlist, return_new_releases
 import logging
+from config import *
 from keyboards import *
 
+# стандартный конфиг лога
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
-
-# названия кнопок
-SEARCH_TEXT = '🔍Поиск'
-HELP_TEXT = '🍼Помощь'
-BACK_TEXT = '⬅️Назад'
-BACK_TEXT2 = '⬅️Вернуться к опциям'
-
-CALLBACK_SEARCH_TRACK = '🎧Найти трек'
-CALLBACK_SEARCH_ARTIST = '🎤Найти исполнителя'
-CALLBACK_SEARCH_ALBUM = '🎸Найти альбом'
-CALLBACK_SEARCH_PLAYLIST = '⭐️Найти плейлист'
-CALLBACK_SEARCH_NOVELTY = '🤡Новинки'
 
 
 # лог-декоратор
@@ -36,22 +26,22 @@ def log_error(f):
 
     return inner
 
-
+# выводиться при нажатии /help
 def help(update: Update, context: CallbackContext):
     update.message.reply_text(
         "Нажмите на клавиатуре поиск (если нет клавиатуры напишите /open)")
 
-
+# самая первая функция, выводиться при нажатии на /start
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
         'Привет я SpotiGram - твой помощник в мире музыки.\nНажимайте на поиск и погнали!',
         reply_markup=keyboard1())
 
-
+# открывает клавиатуру вручную
 def open_keyboard(update: Update, context: CallbackContext):
     update.message.reply_text("Клавиатура открыта", reply_markup=keyboard1())
 
-
+# основной обработчик всех входящих сообщений
 def echo(update: Update, context: CallbackContext):
     text = update.message.text
     if text == SEARCH_TEXT:
@@ -76,7 +66,7 @@ def echo(update: Update, context: CallbackContext):
         update.message.reply_text(f'Я не знаю что ответить на "{update.message.text}"')
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
 
-
+# передает название трека который ввел пользователь в spoti-функцию для поисака трека
 def search_track(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -91,7 +81,7 @@ def search_track(update: Update, context: CallbackContext):
                                   reply_markup=keyboard3())
     return ConversationHandler.END
 
-
+# передает имя исполнителя который ввел пользователь в spoti-функцию для поисака трека
 def search_artist(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -113,6 +103,7 @@ def search_artist(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
+# передает название альбома который ввел пользователь в spoti-функцию для поисака трека
 def search_album(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -129,7 +120,7 @@ def search_album(update: Update, context: CallbackContext):
                                   reply_markup=keyboard3())
     return ConversationHandler.END
 
-
+# передает название плейлиста который ввел пользователь в spoti-функцию для поисака трека
 def search_playlist(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -144,7 +135,7 @@ def search_playlist(update: Update, context: CallbackContext):
                                   reply_markup=keyboard3())
     return ConversationHandler.END
 
-
+# выводит новинки по запросу(берет также из spoti-функции)
 def search_novelty(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
@@ -160,7 +151,7 @@ def search_novelty(update: Update, context: CallbackContext):
                                   reply_markup=back_keyboard())
     return ConversationHandler.END
 
-
+# отвечает за передачу выбранной опции в функцию search
 def choice_options(update: Update, context: CallbackContext, option):
     global opt
     if option == CALLBACK_SEARCH_TRACK:
@@ -177,6 +168,7 @@ def choice_options(update: Update, context: CallbackContext, option):
         update.message.reply_text("Начинаем поиск?", reply_markup=keyboard3())
 
 
+# получает необходимые данные и возвращает их в обработчик сценариев
 def search(update: Update, context: CallbackContext):
     if opt == 1:
         update.message.reply_text("Введите название трека", reply_markup=close_keyboard())

@@ -19,7 +19,6 @@ def main():
         # Точка входа в диалог.
         entry_points=[CommandHandler("search", search)],
 
-        # Вариант с двумя обработчиками, фильтрующими текстовые сообщения.
         states={
             # Функция читает название трека и начинает искать его.
             1: [MessageHandler(Filters.text, search_track, pass_user_data=True)],
@@ -35,10 +34,6 @@ def main():
         # Точка прерывания диалога.
         fallbacks=[CommandHandler('help', help)])
     dp.add_handler(conv_handler)
-    # Зарегистрируем их в диспетчере рядом
-    # с регистрацией обработчиков текстовых сообщений.
-    # Первым параметром конструктора CommandHandler я
-    # вляется название команды.
     text_handler = MessageHandler(Filters.text, echo)
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
@@ -49,17 +44,13 @@ def main():
     dp.add_handler(CommandHandler("search", search))
     dp.add_handler(CommandHandler("open", open_keyboard))
     dp.add_handler(CommandHandler("close", close_keyboard))
-    #dp.add_handler(CallbackQueryHandler(keyboard_callback_handler))
     dp.add_handler(text_handler)
     # Регистрируем обработчик в диспетчере.
     # Запускаем цикл приема и обработки сообщений.
     updater.start_polling()
-
     # Ждём завершения приложения.
-    # (например, получения сигнала SIG_TERM при нажатии клавиш Ctrl+C)
     updater.idle()
 
 
-# Запускаем функцию main() в случае запуска скрипта.
 if __name__ == '__main__':
     main()
