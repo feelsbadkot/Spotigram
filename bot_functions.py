@@ -180,7 +180,7 @@ def choice_options(update: Update, context: CallbackContext, option):
         update.message.reply_text("Начинаем поиск?", reply_markup=keyboard3())
 
 
-# получает необходимые данные и возвращает их в обработчик сценариев
+# получает текущую опцию и возвращает ее в обработчик сценариев
 def search(update: Update, context: CallbackContext):
     if opt == 1:
         update.message.reply_text("Введите название трека", reply_markup=close_keyboard())
