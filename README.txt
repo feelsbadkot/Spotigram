@@ -1,6 +1,6 @@
 Над проектом работали:
 https://vk.com/feelsbadkot - ответственный за связь с Spotify API (функционал бота)
-https://vk.com/roleden - ответсвенный за самого бота
+rew0rker - ответсвенный за самого бота
 
 Telegram: @sp0tigram_bot - наше маленькое творение
 
