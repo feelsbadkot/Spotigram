@@ -26,10 +26,12 @@ def log_error(f):
 
     return inner
 
+
 # выводиться при нажатии /help
 def help(update: Update, context: CallbackContext):
     update.message.reply_text(
         "Нажмите на клавиатуре поиск (если нет клавиатуры напишите /open)")
+
 
 # самая первая функция, выводиться при нажатии на /start
 def start(update: Update, context: CallbackContext):
@@ -37,9 +39,11 @@ def start(update: Update, context: CallbackContext):
         'Привет я SpotiGram - твой помощник в мире музыки.\nНажимайте на поиск и погнали!',
         reply_markup=keyboard1())
 
+
 # открывает клавиатуру вручную
 def open_keyboard(update: Update, context: CallbackContext):
     update.message.reply_text("Клавиатура открыта", reply_markup=keyboard1())
+
 
 # основной обработчик всех входящих сообщений
 def echo(update: Update, context: CallbackContext):
@@ -66,6 +70,7 @@ def echo(update: Update, context: CallbackContext):
         update.message.reply_text(f'Я не знаю что ответить на "{update.message.text}"')
         update.message.reply_text("Что вы хотите сделать?", reply_markup=keyboard2())
 
+
 # передает название трека который ввел пользователь в spoti-функцию для поисака трека
 def search_track(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
@@ -81,6 +86,7 @@ def search_track(update: Update, context: CallbackContext):
                                   reply_markup=keyboard3())
     return ConversationHandler.END
 
+
 # передает имя исполнителя который ввел пользователь в spoti-функцию для поисака трека
 def search_artist(update: Update, context: CallbackContext):
     if update.message.text == BACK_TEXT2:
@@ -95,11 +101,12 @@ def search_artist(update: Update, context: CallbackContext):
             if artist['top_tracks']:
                 update.message.reply_text('Топ треков:\n' + '\n'.join(artist['top_tracks']))
             if artist['discography']:
-                update.effective_message.reply_text('Дискография:\n' + 
+                update.effective_message.reply_text('Дискография:\n' +
                                                     '\n'.join(artist['discography']))
             update.message.reply_text(' - ' * 10)
-        update.message.reply_text("Нажмите на /search чтобы найти другого исполнителя или выберете другую опцию",
-                                  reply_markup=keyboard3())
+        update.message.reply_text(
+            "Нажмите на /search чтобы найти другого исполнителя или выберете другую опцию",
+            reply_markup=keyboard3())
     return ConversationHandler.END
 
 
@@ -116,9 +123,11 @@ def search_album(update: Update, context: CallbackContext):
             update.message.reply_text(album['info'])
             update.message.reply_text("\n".join(album['tracks']))
             update.message.reply_text(' - ' * 10)
-        update.message.reply_text("Нажмите на /search чтобы найти другой альбом или выберете другую опцию",
-                                  reply_markup=keyboard3())
+        update.message.reply_text(
+            "Нажмите на /search чтобы найти другой альбом или выберете другую опцию",
+            reply_markup=keyboard3())
     return ConversationHandler.END
+
 
 # передает название плейлиста который ввел пользователь в spoti-функцию для поисака трека
 def search_playlist(update: Update, context: CallbackContext):
@@ -131,9 +140,11 @@ def search_playlist(update: Update, context: CallbackContext):
         playlist_list = search_for_playlist(context.user_data['playlist'])
         for pl in playlist_list:
             update.message.reply_text(pl)
-        update.message.reply_text("Нажмите на /search чтобы найти другой плейлист или выберете другую опцию",
-                                  reply_markup=keyboard3())
+        update.message.reply_text(
+            "Нажмите на /search чтобы найти другой плейлист или выберете другую опцию",
+            reply_markup=keyboard3())
     return ConversationHandler.END
+
 
 # выводит новинки по запросу(берет также из spoti-функции)
 def search_novelty(update: Update, context: CallbackContext):
@@ -150,6 +161,7 @@ def search_novelty(update: Update, context: CallbackContext):
         update.message.reply_text("Выберете другую опцию",
                                   reply_markup=back_keyboard())
     return ConversationHandler.END
+
 
 # отвечает за передачу выбранной опции в функцию search
 def choice_options(update: Update, context: CallbackContext, option):
