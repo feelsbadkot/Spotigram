@@ -108,7 +108,7 @@ def search_artist(update: Update, context: CallbackContext):
             if artist['discography']:
                 update.effective_message.reply_text('Дискография:\n' + 
                                                     '\n'.join(artist['discography']))
-            update.message.reply_text('-' * 81)
+            update.message.reply_text(' - ' * 10)
         update.message.reply_text("Введите другого исполнителя или выберете другую опцию",
                                   reply_markup=back_keyboard())
     return ConversationHandler.END
@@ -125,7 +125,7 @@ def search_album(update: Update, context: CallbackContext):
         for album in album_list:
             update.message.reply_text(album['info'])
             update.message.reply_text("\n".join(album['tracks']))
-            update.message.reply_text('-' * 81)
+            update.message.reply_text(' - ' * 10)
         update.message.reply_text("Введите другой альбом или выберете другую опцию",
                                   reply_markup=back_keyboard())
     return ConversationHandler.END
@@ -156,7 +156,7 @@ def search_novelty(update: Update, context: CallbackContext):
         for nov in novelty_list:
             update.message.reply_text(nov['info'])
             update.message.reply_text("\n".join(nov['tracks']))
-            update.message.reply_text('-' * 81)
+            update.message.reply_text(' - ' * 10)
         update.message.reply_text("Выберете другую опцию",
                                   reply_markup=back_keyboard())
     return ConversationHandler.END
